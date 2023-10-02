@@ -7,13 +7,28 @@ const taskRoute = require("./routes/taskRoute")
 const cors = require("cors")
 
 const app = express()
+const allowedOrigins = ['https://mern-task-myapp.onrender.com'];
 
 // Middlware
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cors({
-    origin: ["http://localhost:3000", "https://mern-task-myapp.onrender.com"]
-}))
+// app.use(cors({
+//     origin: ["http://localhost:3000", "https://mern-task-myapp.onrender.com"]
+// }))
+
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
+
 app.use("/api/tasks", taskRoute)
 
 // Routes
